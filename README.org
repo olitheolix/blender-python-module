@@ -1,6 +1,50 @@
 * Create Blender as a Standalone Python Module
 
+This repo contains a reference Dockerfile to build the Blender =bpy= module. It
+also shows how to use the module on the host assuming the Python versions match.
+
+Blender version: =3.3=
+Python version: =3.10.*=
+
+** Build Blender BPY Module In Docker
 #+begin_src bash
   docker build -t blender .
   docker run -ti --rm blender python3 -- demo.py
+#+end_src
+
+** Copy BPY Module To Host
+Copy the =bpy= module from the container to the host. Adjust the =BPY_PREFIX=
+variable as you see fit.
+
+#+begin_src bash
+  # Install dependencies (Ubuntu/Debian).
+  apt install libdbus-1-dev libegl-dev libembree-dev libfftw3-dev libfreetype6-dev libglew-dev libgmp10-dev libhpdf-dev libjpeg-dev libopenimageio-dev libpng-dev libpotrace-dev libpugixml-dev libtbb-dev libwayland-dev libwebp-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxkbcommon-dev libxrandr-dev libxxf86vm-dev libzstd-dev linux-libc-dev zlib1g
+
+  # Specify the host folder for the BPY module.
+  export BPY_PREFIX=/tmp/bpy
+
+  # Create temporary container from Blender image to copy files out of it.
+  docker run -ti --name blender blender bash -c "exit"
+  docker cp blender:/pyblender/ $BPY_PREFIX
+  docker rm blender
+
+  # Optional: create a .env file.
+  echo "PYTHONPATH=$BPY_PREFIX" > .env
+  unset BPY_PREFIX
+#+end_src
+
+You should now be able to use the =bpy= module in the virtual environment of
+your choice.
+
+IMPORTANT: the Python versions *must* match. For Blender 3.3 you need a Python
+3.10.* environment.
+
+#+begin_src bash
+  # Host Python.
+  source .env
+  python -c "import bpy"
+
+  # Pipenv.
+  pipenv install
+  pipenv run python -c "import bpy"
 #+end_src

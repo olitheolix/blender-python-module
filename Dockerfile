@@ -1,11 +1,12 @@
 # ----------------------------------------------------------------------
-# Create Blender as a Python module.
+# Build Blender 3.3 as a Python module.
 #
 # Usage;
 #   docker build -t blender .
-#   docker run -ti --rm blender bash
+#   docker run -ti --rm blender bash -c "PYTHONPATH=/pyblender python3 demo.py"
 # ----------------------------------------------------------------------
 FROM ubuntu:22.04
+
 
 # ----------------------------------------------------------------------
 # Install dependencies.
@@ -55,6 +56,7 @@ RUN git clone https://github.com/blender/blender.git /src/blender
 WORKDIR /src/blender
 RUN git checkout blender-v3.3-release
 
+
 # ----------------------------------------------------------------------
 # Build and install the Blender module.
 # ----------------------------------------------------------------------
@@ -66,21 +68,22 @@ RUN make update && make bpy
 # Move into the build directory and run another CMake command to actually install the module.
 WORKDIR /src/build_linux_bpy
 RUN cmake ../blender \
-  -DPYTHON_SITE_PACKAGES=/usr/local/lib/python3.10/dist-packages/ \
+  -DPYTHON_SITE_PACKAGES=/pyblender \
   -DWITH_INSTALL_PORTABLE=OFF \
   -DWITH_PYTHON_INSTALL=OFF \
   -DWITH_PLAYER=OFF \
   -DWITH_PYTHON_MODULE=ON
 RUN make install -j$(nproc)
 
+
 # ----------------------------------------------------------------------
 # Verify the installation.
 # ----------------------------------------------------------------------
 
 # Try to import the `bpy` module as a first test.
-RUN python3 -c "import bpy"
+RUN PYTHONPATH=/pyblender python3 -c "import bpy"
 
 # Run a small demo script.
 WORKDIR /demo
 COPY demo.py .
-RUN python3 demo.py
+RUN PYTHONPATH=/pyblender python3 demo.py
