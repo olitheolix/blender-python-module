@@ -1,0 +1,5 @@
+blender/
+linux_centos7_x86_64/
+
+*.tar
+*.tar.bz2
