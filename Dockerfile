@@ -79,3 +79,8 @@ RUN make install -j$(nproc)
 
 # Try to import the `bpy` module as a first test.
 RUN python3 -c "import bpy"
+
+# Run a small demo script.
+WORKDIR /demo
+COPY demo.py .
+RUN python3 demo.py
