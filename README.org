@@ -1,0 +1,6 @@
+* Create Blender as a Standalone Python Module
+
+#+begin_src bash
+  docker build -t blender .
+  docker run -ti --rm blender python3 -- demo.py
+#+end_src
