@@ -9,7 +9,7 @@ Python version: =3.10.*=
 ** Build Blender BPY Module In Docker
 #+begin_src bash
   docker build -t blender .
-  docker run -ti --rm blender python3 -- demo.py
+  docker run -ti --rm blender bash -c "PYTHONPATH=/pyblender python3 demo.py"
 #+end_src
 
 ** Copy BPY Module To Host
