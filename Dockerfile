@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------
-# Build Blender 3.3 as a Python module.
+# Build Blender 3.4 as a Python module.
 #
 # Usage;
 #   docker build -t blender .
@@ -17,7 +17,9 @@ RUN apt update && apt install -y \
     git \
     libboost-all-dev \
     libdbus-1-dev \
+    libdecor-0-dev \
     libegl-dev \
+    libepoxy-dev \
     libembree-dev \
     libfftw3-dev \
     libfreetype6-dev \
@@ -54,8 +56,7 @@ RUN pip3 install ipython
 # Clone Blender and checkout v3.3
 RUN git clone https://github.com/blender/blender.git /src/blender
 WORKDIR /src/blender
-RUN git checkout blender-v3.3-release
-
+RUN git checkout blender-v3.4-release
 
 # ----------------------------------------------------------------------
 # Build and install the Blender module.
