@@ -57,10 +57,16 @@ RUN apt update && apt install -y \
 # Blender does not require IPython but it is handy to have in any case.
 RUN pip3 install ipython
 
-# Clone Blender and checkout v3.3
-RUN git clone https://github.com/blender/blender.git /src/blender
-WORKDIR /src/blender
-RUN git checkout blender-v3.4-release
+
+# ----------------------------------------------------------------------
+# Build OpenColorIO (Ubuntu packages are too old)
+# ----------------------------------------------------------------------
+RUN git clone https://github.com/AcademySoftwareFoundation/OpenColorIO.git /tmp/ocio
+RUN cmake -S /tmp/ocio -B /tmp/build -DOCIO_INSTALL_EXT_PACKAGES=MISSING
+RUN cmake --build /tmp/build -j24
+RUN make -C /tmp/build install
+RUN ldconfig
+
 
 # ----------------------------------------------------------------------
 # Build and install the Blender module.
