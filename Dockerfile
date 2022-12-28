@@ -19,19 +19,23 @@ RUN apt update && apt install -y \
     libdbus-1-dev \
     libdecor-0-dev \
     libegl-dev \
-    libepoxy-dev \
     libembree-dev \
+    libepoxy-dev \
     libfftw3-dev \
     libfreetype6-dev \
     libglew-dev \
     libgmp10-dev \
     libhpdf-dev \
     libjpeg-dev \
+    libjpeg-dev \
+    libopenexr-dev \
     libopenimageio-dev \
+    libopenjp2-7-dev \
     libpng-dev \
     libpotrace-dev \
     libpugixml-dev \
     libtbb-dev \
+    libtiff-dev \
     libwayland-dev \
     libwebp-dev \
     libx11-dev \
