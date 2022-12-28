@@ -65,10 +65,14 @@ RUN git checkout blender-v3.4-release
 # ----------------------------------------------------------------------
 # Build and install the Blender module.
 # ----------------------------------------------------------------------
+RUN git clone https://github.com/blender/blender.git /src/blender
+WORKDIR /src/blender
+RUN git checkout blender-v3.4-release
 
 # FYI: This will create a new folder </src/build_linux_bpy> which is NOT a
 # sub-folder of </src/blender> for some reason.
-RUN make update && make bpy
+RUN make update
+RUN make bpy
 
 # Move into the build directory and run another CMake command to actually install the module.
 WORKDIR /src/build_linux_bpy
@@ -82,10 +86,10 @@ RUN make install -j$(nproc)
 
 
 # ----------------------------------------------------------------------
-# Verify the installation.
+# Verify the build.
 # ----------------------------------------------------------------------
 
-# Try to import the `bpy` module as a first test.
+# Import the `bpy` module as a first test.
 RUN PYTHONPATH=/pyblender python3 -c "import bpy"
 
 # Run a small demo script.
