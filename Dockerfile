@@ -51,6 +51,7 @@ RUN apt update && apt install -y \
     python3-pip \
     python3.10-dev \
     wayland-protocols \
+    wget \
     zlib1g \
     zlib1g-dev
 
@@ -62,9 +63,20 @@ RUN pip3 install ipython
 # Build OpenColorIO (Ubuntu packages are too old)
 # ----------------------------------------------------------------------
 RUN git clone https://github.com/AcademySoftwareFoundation/OpenColorIO.git /tmp/ocio
-RUN cmake -S /tmp/ocio -B /tmp/build -DOCIO_INSTALL_EXT_PACKAGES=MISSING
-RUN cmake --build /tmp/build -j24
-RUN make -C /tmp/build install
+RUN cmake -S /tmp/ocio -B /tmp/ocio/build -DOCIO_INSTALL_EXT_PACKAGES=MISSING
+RUN cmake --build /tmp/ocio/build -j24
+RUN make -C /tmp/ocio/build install
+RUN ldconfig
+
+
+# ----------------------------------------------------------------------
+# Build and install OpenSubdiv.
+# ----------------------------------------------------------------------
+RUN wget https://github.com/PixarAnimationStudios/OpenSubdiv/archive/refs/tags/v3_4_4.tar.gz --output-document=/tmp/osd.tar.gz
+RUN tar -xvf /tmp/osd.tar.gz -C /tmp && mv /tmp/OpenSubdiv-3_4_4 /tmp/osd
+RUN cmake -S /tmp/osd -B /tmp/osd/build/ -DCMAKE_BUILD_TYPE=Release -DNO_TBB=ON -DNO_CUDA=ON -DNO_OPENCL=ON -DNO_PTEX=ON
+RUN cmake --build /tmp/osd/build -j24
+RUN make -C /tmp/osd/build install
 RUN ldconfig
 
 
